@@ -1,4 +1,4 @@
--- SimpleGUI Library
+-- SimpleGUI Library with Close Button
 local SimpleGUI = {}
 
 -- Function to create a window
@@ -25,6 +25,23 @@ function SimpleGUI:CreateWindow(config)
     Draggable.TextXAlignment = Enum.TextXAlignment.Left
     Draggable.Parent = Frame
 
+    -- Close Button
+    local CloseButton = Instance.new("TextButton")
+    CloseButton.Size = UDim2.new(0, 30, 0, 30)
+    CloseButton.Position = UDim2.new(1, -30, 0, 0)
+    CloseButton.AnchorPoint = Vector2.new(1, 0)
+    CloseButton.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+    CloseButton.Text = "X"
+    CloseButton.TextColor3 = Color3.new(1, 1, 1)
+    CloseButton.Font = Enum.Font.SourceSansBold
+    CloseButton.TextSize = 18
+    CloseButton.Parent = Frame
+
+    CloseButton.MouseButton1Click:Connect(function()
+        ScreenGui:Destroy()
+    end)
+
+    -- Dragging functionality
     local UIS = game:GetService("UserInputService")
     local dragging, dragStart, startPos
 
@@ -105,7 +122,7 @@ function SimpleGUI:AddButton(tab, config)
     local Button = Instance.new("TextButton")
     Button.Text = config.Text or "Button"
     Button.Size = UDim2.new(0, 150, 0, 40)
-    Button.Position = config.Position or UDim2.new(0, 0, 0.1 * (#tab:GetChildren() + 1), 0)
+    Button.Position = UDim2.new(0, 10, 0, 10 + (#tab:GetChildren() - 1) * 50)
     Button.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
     Button.TextColor3 = Color3.new(1, 1, 1)
     Button.Font = Enum.Font.SourceSans
