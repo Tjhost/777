@@ -73,12 +73,19 @@ function SimpleGUI:CreateWindow(config)
 
     -- Tabs container
     local TabsHolder = Instance.new("Frame")
-    TabsHolder.Size = UDim2.new(1, 0, 1, -30)
+    TabsHolder.Size = UDim2.new(1, 0, 0, 30)
     TabsHolder.Position = UDim2.new(0, 0, 0, 30)
     TabsHolder.BackgroundTransparency = 1
     TabsHolder.Parent = Frame
 
-    local Window = { Frame = Frame, TabsHolder = TabsHolder, ScreenGui = ScreenGui, Tabs = {} }
+    -- Tab content container (Scrollable)
+    local TabsContent = Instance.new("Frame")
+    TabsContent.Size = UDim2.new(1, 0, 1, -60)
+    TabsContent.Position = UDim2.new(0, 0, 0, 60)
+    TabsContent.BackgroundTransparency = 1
+    TabsContent.Parent = Frame
+
+    local Window = { Frame = Frame, TabsHolder = TabsHolder, TabsContent = TabsContent, ScreenGui = ScreenGui, Tabs = {} }
     setmetatable(Window, { __index = SimpleGUI })
     return Window
 end
@@ -104,7 +111,7 @@ function SimpleGUI:AddTab(config)
     TabFrame.Position = UDim2.new(0, 0, 0, 30)
     TabFrame.BackgroundTransparency = 1
     TabFrame.Visible = false
-    TabFrame.Parent = self.TabsHolder
+    TabFrame.Parent = self.TabsContent
 
     TabButton.MouseButton1Click:Connect(function()
         for _, tab in pairs(self.Tabs) do
