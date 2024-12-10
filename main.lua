@@ -1,4 +1,4 @@
--- SimpleGUI Library with Close Button
+-- SimpleGUI Library
 local SimpleGUI = {}
 
 -- Function to create a window
@@ -140,12 +140,82 @@ end
 
 -- Function to add a slider
 function SimpleGUI:AddSlider(tab, config)
-    -- Slider implementation from previous code
+    local Slider = Instance.new("Frame")
+    Slider.Size = UDim2.new(0, 200, 0, 50)
+    Slider.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+    Slider.Parent = tab
+
+    local SliderBar = Instance.new("Frame")
+    SliderBar.Size = UDim2.new(1, 0, 0, 10)
+    SliderBar.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+    SliderBar.Position = UDim2.new(0, 0, 0.5, -5)
+    SliderBar.Parent = Slider
+
+    local SliderThumb = Instance.new("Frame")
+    SliderThumb.Size = UDim2.new(0, 20, 1, 0)
+    SliderThumb.BackgroundColor3 = Color3.fromRGB(200, 200, 200)
+    SliderThumb.Parent = SliderBar
+
+    local Dragging = false
+    local function updateSlider(input)
+        if Dragging then
+            local pos = math.clamp(input.Position.X - Slider.Position.X.Offset, 0, Slider.Size.X.Offset)
+            SliderThumb.Position = UDim2.new(0, pos, 0, 0)
+            local value = math.round(pos / Slider.Size.X.Offset * (config.Max - config.Min) + config.Min)
+            if config.Callback then
+                config.Callback(value)
+            end
+        end
+    end
+
+    SliderThumb.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            Dragging = true
+        end
+    end)
+
+    SliderThumb.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            Dragging = false
+        end
+    end)
+
+    game:GetService("UserInputService").InputChanged:Connect(updateSlider)
+
+    return Slider
 end
 
 -- Function to add a toggle
 function SimpleGUI:AddToggle(tab, config)
-    -- Toggle implementation from previous code
+    local Toggle = Instance.new("Frame")
+    Toggle.Size = UDim2.new(0, 200, 0, 40)
+    Toggle.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+    Toggle.Parent = tab
+
+    local ToggleButton = Instance.new("TextButton")
+    ToggleButton.Size = UDim2.new(0, 80, 1, 0)
+    ToggleButton.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+    ToggleButton.Text = "Off"
+    ToggleButton.TextColor3 = Color3.new(1, 1, 1)
+    ToggleButton.Font = Enum.Font.SourceSans
+    ToggleButton.TextSize = 16
+    ToggleButton.Parent = Toggle
+
+    ToggleButton.MouseButton1Click:Connect(function()
+        if ToggleButton.Text == "Off" then
+            ToggleButton.Text = "On"
+            if config.Callback then
+                config.Callback(true)
+            end
+        else
+            ToggleButton.Text = "Off"
+            if config.Callback then
+                config.Callback(false)
+            end
+        end
+    end)
+
+    return Toggle
 end
 
 return SimpleGUI
